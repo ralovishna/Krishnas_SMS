@@ -1,0 +1,91 @@
+// Cache the login form and input elements
+const loginForm = document.getElementById("loginForm");
+const username = document.getElementById("username");
+const password = document.getElementById("password");
+const submit = document.getElementById("submit");
+
+// Utility function for random range
+function randomRange(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+// Function to create snowflakes
+function createSnowflake() {
+    const snowParticle = document.createElement("div");
+    snowParticle.classList.add("snow");
+
+    // Randomize size and position
+    const size = randomRange(3, 10) + "px";
+    snowParticle.style.width = size;
+    snowParticle.style.height = size;
+    snowParticle.style.left = randomRange(0, window.innerWidth) + "px";
+
+    // Randomize animation duration and delay for staggered appearance
+    snowParticle.style.animationDuration = randomRange(5, 15) + "s";
+    snowParticle.style.animationDelay = randomRange(0, 10) + "s";
+
+    document.body.appendChild(snowParticle);
+
+    // Remove the snowflake after the animation ends
+    snowParticle.addEventListener("animationend", () => {
+        snowParticle.remove();
+    });
+}
+
+// Function to generate snowflakes in batches
+function generateSnowflakes() {
+    const batchSize = 10; // Number of snowflakes to create per batch
+    const interval = 500; // Time between batches in milliseconds
+
+    function createBatch() {
+        for (let i = 0; i < batchSize; i++) {
+            createSnowflake();
+        }
+        setTimeout(createBatch, interval); // Schedule the next batch
+    }
+
+    createBatch(); // Start the first batch
+}
+
+// Start generating snowflakes
+generateSnowflakes();
+
+// Event listener for login form submission
+loginForm.addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevent default form submission for debugging
+    const id = username.value;
+    const passwordValue = password.value;
+    console.log("Username:", id);
+    console.log("Password:", passwordValue);
+});
+
+// Handle focus animations for input fields
+function handleFocusAnimation(target, dashOffsetValue) {
+    if (current) current.pause();
+    current = anime({
+        targets: 'path',
+        strokeDashoffset: {
+            value: dashOffsetValue,
+            duration: 700,
+            easing: 'easeOutQuart'
+        },
+        strokeDasharray: {
+            value: '240 1386',
+            duration: 700,
+            easing: 'easeOutQuart'
+        }
+    });
+}
+
+// Focus event listeners
+username.addEventListener('focus', function() {
+    handleFocusAnimation(this, 0);
+});
+
+password.addEventListener('focus', function() {
+    handleFocusAnimation(this, -336);
+});
+
+submit.addEventListener('focus', function() {
+    handleFocusAnimation(this, -730);
+});

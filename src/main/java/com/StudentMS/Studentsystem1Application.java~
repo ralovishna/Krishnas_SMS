@@ -1,0 +1,48 @@
+package com.studentsystem1;
+
+import com.studentsystem1.entity.Teacher;
+import com.studentsystem1.repository.StudentRepo;
+import com.studentsystem1.repository.TeacherRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+@SpringBootApplication
+@EnableJpaRepositories(basePackages = "com.studentsystem1.repository")
+@EntityScan(basePackages = "com.studentsystem1.entity")
+public class Studentsystem1Application {
+
+    @Autowired
+    private StudentRepo studentRepo;
+
+    @Autowired
+    private TeacherRepo teacherRepo;
+
+    public static void main(String[] args) {
+        SpringApplication.run(Studentsystem1Application.class, args);
+    }
+
+    // CommandLineRunner bean for initializing data
+    @Bean
+    public CommandLineRunner demoData() {
+        return args -> {
+            // Create students without manually setting IDs (let database handle it)
+//            Student student1 = new Student(null, "A", "a@.com", "123", 1);
+//            Student student2 = new Student(null, "B", "b@.com", "123", 2);
+//            Student student3 = new Student(null, "C", "c@.com", "123", 3);
+//
+//            // Save them to the repository
+//            studentRepo.save(student1);
+//            studentRepo.save(student2);
+//            studentRepo.save(student1);
+
+            Teacher teacher1 = new Teacher(null, "A", "teacher", "commerce", "12", "statistics", "a@gmail.com", "iamteacher", 45768645);
+            teacherRepo.save(teacher1);
+            System.out.println("Students saved successfully!");
+        };
+    }
+}

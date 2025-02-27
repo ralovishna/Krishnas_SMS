@@ -1,0 +1,36 @@
+package com.StudentMS.service;
+
+import com.StudentMS.entity.User;
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotBlank;
+
+import java.util.List;
+
+public interface UserService {
+
+//    UserDetails loadUserByUsername(String username);
+
+//    User findByUsername(String username);
+
+    @Transactional
+    void saveUser(User newUser);
+
+    List<User> getAllUsers();
+
+    User getUserByUsername(String username);
+
+    @Transactional
+    User registerUser(String username, String password, String role);
+
+    User getUserById(Long id);
+
+    @Transactional
+    void deleteUserById(Long id);
+
+    boolean isUsernameExist(@NotBlank String username, Long excludeUserId);
+
+    boolean isUsernameExist(String username);
+
+    @Transactional
+    void savePassRole(String username, String newPassword, String newRole);
+}
