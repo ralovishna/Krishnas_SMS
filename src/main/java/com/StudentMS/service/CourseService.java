@@ -12,7 +12,7 @@ public interface CourseService {
 
     Course getCourseById(Long id);
 
-    Course saveCourse(Course course);
+    void saveCourse(Course course);
 
     void deleteCourse(Long id);
 }

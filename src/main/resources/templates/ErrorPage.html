@@ -54,8 +54,9 @@
             <!-- Logout Button -->
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <form th:action="@{/logout}">
+                    <form method="post" th:action="@{/logout}">
                         <button class="btn btn-outline-light" type="submit">Logout</button>
+                        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
                     </form>
                 </li>
             </ul>
@@ -67,7 +68,7 @@
 <div class="container mt-4">
     <h1 class="text-danger">Oops! Something went wrong.</h1>
     <p class="lead" th:text="${errorMessage}">An unexpected error occurred.</p>
-    <a class="btn btn-primary" th:href="@{/admin/dashboard}">Go Back to Dashboard</a>
+    <a class="btn btn-primary" th:href="@{/dashboard}">Go Back to Dashboard</a>
 </div>
 
 <!-- Bootstrap 5 JS -->

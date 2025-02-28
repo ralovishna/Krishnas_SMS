@@ -17,7 +17,7 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    User getUserByUsername(String username);
+//    User getUserByUsername(String username);
 
     @Transactional
     User registerUser(String username, String password, String role);
@@ -33,4 +33,8 @@ public interface UserService {
 
     @Transactional
     void savePassRole(String username, String newPassword, String newRole);
+
+    User getCurrentUser();
+
+//    User getUserByEmail(String name);
 }

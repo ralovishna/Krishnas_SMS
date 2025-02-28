@@ -13,19 +13,21 @@ public interface StudentService {
 
     Student getStudentById(Long id);
 
-    Student updateStudent(Student student);
+//    Student updateStudent(Student student);
 
     void deleteStudentById(Long id);
 
-    boolean checkLogin(Long id, String password);
+//    boolean checkLogin(Long id, String password);
 
     Object getTotalStudents();
 
     Optional<User> findById(Long id);
 
-    boolean isUsernameAlreadyExists(String username, Long id);
+//    boolean isUsernameAlreadyExists(String username, Long id);
 
-    Optional<User> findByUsername(String username);
+//    Optional<User> findByUsername(String username);
+
+//    Student getAuthenticatedStudentById(Long id);
 
 //    Optional<Object> findByUserId(Long id);
 }

@@ -1,0 +1,16 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.ehcache.org/v3"
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
+    <cache alias="teachers">
+        <heap unit="entries">1000</heap>
+        <expiry>
+            <ttl unit="seconds">3600</ttl> <!-- Cache expires after 1 hour -->
+        </expiry>
+    </cache>
+    <cache alias="students">
+        <heap unit="entries">1000</heap>
+        <expiry>
+            <ttl unit="seconds">3600</ttl> <!-- Cache expires after 1 hour -->
+        </expiry>
+    </cache>
+</config>

@@ -5,6 +5,7 @@ import com.StudentMS.entity.User;
 import com.StudentMS.repository.StudentRepo;
 import com.StudentMS.repository.UserRepo;
 import com.StudentMS.service.StudentService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void saveStudent(Student student) {
+    public void saveStudent(@NotNull Student student) {
         student.setRole("ROLE_STUDENT");
         student.setPassword(passwordEncoder.encode(student.getPassword()));
         studentRepo.save(student);
@@ -43,19 +44,14 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student updateStudent(Student student) {
-        return studentRepo.save(student);
-    }
-
-    @Override
     public void deleteStudentById(Long id) {
         studentRepo.deleteById(id);
     }
 
-    @Override
-    public boolean checkLogin(Long id, String password) {
-        return studentRepo.findById(id).isPresent() && studentRepo.findById(id).get().getPassword().equals(password);
-    }
+//    @Override
+//    public boolean checkLogin(Long id, String password) {
+//        return studentRepo.findById(id).isPresent() && studentRepo.findById(id).get().getPassword().equals(password);
+//    }
 
     @Override
     public Object getTotalStudents() {
@@ -67,14 +63,19 @@ public class StudentServiceImpl implements StudentService {
         return userRepo.findById(id);
     }
 
-    public boolean isUsernameAlreadyExists(String username, Long id) {
-        return studentRepo.existsByUsernameAndIdNot(username, id);
-    }
+//    public boolean isUsernameAlreadyExists(String username, Long id) {
+//        return studentRepo.existsByUsernameAndIdNot(username, id);
+//    }
 
-    @Override
-    public Optional<User> findByUsername(String username) {
-        return userRepo.findByUsername(username);
-    }
+//    @Override
+//    public Optional<User> findByUsername(String username) {
+//        return userRepo.findByUsername(username);
+//    }
+//
+//    @Override
+//    public Student getAuthenticatedStudentById(Long id) {
+//        return studentRepo.findById(id).orElse(null);
+//    }
 
 //    @Override
 //    public Optional<Object> findByUserId(Long id) {

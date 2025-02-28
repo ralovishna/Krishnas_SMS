@@ -17,12 +17,14 @@ public class Department {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "department_id")
+    @Column(updatable = false, name = "department_id")
     private Long id;
     @NotNull
-    @Column(unique = true)
+    @Column(unique = true, name = "name", nullable = false, length = 20)
     private String name;
+    @Column(name = "head_of_department", length = 20)
     private String head_of_department;
+    @Column(name = "description", length = 70)
     private String description;
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

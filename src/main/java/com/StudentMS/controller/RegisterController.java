@@ -2,19 +2,22 @@ package com.StudentMS.controller;
 
 import com.StudentMS.entity.User;
 import com.StudentMS.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/register")
 public class RegisterController {
 
+    private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
     private final UserService userService;
 
@@ -25,52 +28,45 @@ public class RegisterController {
 
     @GetMapping
     public String showRegistrationForm() {
-        return "Register"; // Render the registration form (Register.html)
+        return "Register";
     }
 
     @PostMapping
-    public String registerUser(@RequestParam("username") String username,
-                               @RequestParam("password") String password,
-                               @RequestParam("role") String role,
-                               HttpServletResponse response,
-                               RedirectAttributes redirectAttributes) {
+    public ResponseEntity<String> registerUser(@RequestParam("username") String username,
+                                               @RequestParam("password") String password,
+                                               @RequestParam("role") String role) {
 
-//        logger.debug("Attempting to register user: {}", username);
+        logger.info("Attempting to register user: {}", username);
 
-        // Check if the username already exists
         if (userService.isUsernameExist(username, null)) {
-//            logger.warn("Username already exists: {}", username);
-            redirectAttributes.addFlashAttribute("error", "Username already exists.");
-            return "redirect:/register";
+            logger.warn("Username already exists: {}", username);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists.");
         }
 
-        // Prefix the role with "NEW_" (or any other logic you need)
-        String prefixedRole = "NEW_" + role.toUpperCase();
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\nPrefixed role: {}" + prefixedRole);
+        try {
+            User user = userService.registerUser(username, password, role);
 
-        // Register the user
-        User user = userService.registerUser(username, password, prefixedRole);
+            if (user == null) {
+                logger.error("Registration failed for user: {}", username);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed. Please try again.");
+            }
 
-        if (user == null) {
-            System.out.println("Registration failed for user: {}" + username);
-            redirectAttributes.addFlashAttribute("error", "Registration failed. Please try again.");
-            return "redirect:/register";
+            logger.info("User registered successfully: {}", username);
+
+            String redirectUrl = getRedirectUrl(user.getRole());
+            return ResponseEntity.ok(redirectUrl);
+
+        } catch (Exception e) {
+            logger.error("Error during registration: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during registration.");
         }
+    }
 
-        System.out.println("User registered successfully: {}" + username);
-
-        // Redirect based on role
-        switch (prefixedRole) {
-            case "NEW_STUDENT":
-                System.out.println("Redirecting to student dashboard for user: {}" + username);
-                return "redirect:/students/new";
-            case "NEW_TEACHER":
-                System.out.println("Redirecting to teacher dashboard for user: {}" + username);
-                return "redirect:/teachers/new";
-            default:
-                System.out.println("Invalid role selected: {}" + prefixedRole);
-                redirectAttributes.addFlashAttribute("error", "Invalid role selected.");
-                return "redirect:/register";
-        }
+    private String getRedirectUrl(String role) {
+        return switch (role) {
+            case "NEW_STUDENT" -> "/students/new";
+            case "NEW_TEACHER" -> "/teachers/new";
+            default -> "/register";
+        };
     }
 }

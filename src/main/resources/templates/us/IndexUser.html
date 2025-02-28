@@ -54,9 +54,9 @@
             <!-- Logout Button -->
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <form th:action="@{/logout}" method="post">
+                    <form method="post" th:action="@{/logout}">
                         <button class="btn btn-outline-light" type="submit">Logout</button>
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
                     </form>
                 </li>
             </ul>

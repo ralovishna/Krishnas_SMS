@@ -4,6 +4,8 @@ import com.StudentMS.service.CourseService;
 import com.StudentMS.service.DepartmentService;
 import com.StudentMS.service.StudentService;
 import com.StudentMS.service.TeacherService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ public class HomeController {
     private final CourseService courseService;
     private final DepartmentService departmentService;
 
+    @Autowired
     public HomeController(StudentService studentService, TeacherService teacherService, CourseService courseService, DepartmentService departmentService) {
         this.studentService = studentService;
         this.teacherService = teacherService;
@@ -23,6 +26,7 @@ public class HomeController {
     }
 
     @GetMapping("/dashboard") // Corrected mapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STUDENT', 'ROLE_TEACHER')")
     public String showDashboard(Model model) {
         model.addAttribute("totalStudents", studentService.getTotalStudents());
         model.addAttribute("totalTeachers", teacherService.getTotalTeachers());

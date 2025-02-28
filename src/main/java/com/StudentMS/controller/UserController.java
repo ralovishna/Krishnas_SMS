@@ -6,12 +6,13 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -19,17 +20,16 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')") // Restrict to ADMIN role
     public String getAllUsers(Model model) {
         logger.info("Getting all users");
         List<User> users = userService.getAllUsers();
@@ -38,6 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/new")
+    @PreAuthorize("hasRole('ADMIN')") // Restrict to ADMIN role
     public String showAddUserForm(Model model) {
         logger.info("Showing add user form");
         model.addAttribute("user", new User());
@@ -45,7 +46,8 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult result) {
+    @PreAuthorize("hasRole('ADMIN')") // Restrict to ADMIN role
+    public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult result, RedirectAttributes redirectAttributes) {
         logger.info("Saving user: {}", user);
 
         if (result.hasErrors()) {
@@ -59,18 +61,27 @@ public class UserController {
             return user.getId() != null ? "us/EditUser" : "us/CreateUser";
         }
 
-        userService.saveUser(user);
-        logger.info("User saved successfully: {}", user);
+        try {
+            userService.saveUser(user);
+            logger.info("User saved successfully: {}", user);
+            redirectAttributes.addFlashAttribute("successMessage", "User saved successfully.");
+        } catch (DataIntegrityViolationException e) {
+            logger.error("Database integrity violation: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "An error occurred while saving the user. Please check the data.");
+            return "redirect:/users/new";
+        }
 
         return "redirect:/users";
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditUserForm(@PathVariable Long id, Model model) {
+    @PreAuthorize("hasRole('ADMIN')") // Restrict to ADMIN role
+    public String showEditUserForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         logger.info("Showing edit user form for ID: {}", id);
         User user = userService.getUserById(id);
         if (user == null) {
             logger.warn("User not found with ID: {}", id);
+            redirectAttributes.addFlashAttribute("errorMessage", "User not found.");
             return "redirect:/users";
         }
         model.addAttribute("user", user);
@@ -78,9 +89,16 @@ public class UserController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable Long id) {
+    @PreAuthorize("hasRole('ADMIN')") // Restrict to ADMIN role
+    public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         logger.info("Deleting user with ID: {}", id);
-        userService.deleteUserById(id);
+        try {
+            userService.deleteUserById(id);
+            redirectAttributes.addFlashAttribute("successMessage", "User deleted successfully.");
+        } catch (Exception e) {
+            logger.error("Error deleting user: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting user.");
+        }
         return "redirect:/users";
     }
 }

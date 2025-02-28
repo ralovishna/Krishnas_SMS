@@ -12,12 +12,15 @@ public interface UserService {
 
 //    User findByUsername(String username);
 
+    @org.springframework.transaction.annotation.Transactional
+    void updatePassword(Long id, String newPassword);
+
     @Transactional
     void saveUser(User newUser);
 
     List<User> getAllUsers();
 
-    User getUserByUsername(String username);
+//    User getUserByUsername(String username);
 
     @Transactional
     User registerUser(String username, String password, String role);
@@ -35,4 +38,6 @@ public interface UserService {
     void savePassRole(String username, String newPassword, String newRole);
 
     User getCurrentUser();
+
+//    User getUserByEmail(String name);
 }

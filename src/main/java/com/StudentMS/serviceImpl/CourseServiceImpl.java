@@ -31,8 +31,8 @@ public class CourseServiceImpl implements CourseService {
         return courseRepo.findById(id).orElse(null);
     }
 
-    public Course saveCourse(Course course) {
-        return courseRepo.save(course);
+    public void saveCourse(Course course) {
+        courseRepo.save(course);
     }
 
     public void deleteCourse(Long id) {
