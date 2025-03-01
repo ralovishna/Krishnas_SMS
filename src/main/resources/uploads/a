@@ -1,0 +1,8 @@
+id	BIGINT
+fileName	VARCHAR
+fileType	VARCHAR
+filePath	VARCHAR
+uploadedBy	BIGINT
+uploadDate	TIMESTAMP
+courseId	BIGINT
+visibleToStudents

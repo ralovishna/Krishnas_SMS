@@ -27,13 +27,18 @@ public class CustomUserDetailsService implements UserDetailsService {
         return authentication.getName();
     }
 
+    public User getCurrentUser() {
+        String username = getLoggedInUsername();
+        return userRepo.findByUsername(username).orElse(null);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
         List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
-        System.out.println("User: " + username + ", Roles: " + authorities); // Add this line
+        System.out.println("User: " + username + ", Roles: " + authorities);
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),

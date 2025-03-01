@@ -15,4 +15,6 @@ public interface CourseService {
     void saveCourse(Course course);
 
     void deleteCourse(Long id);
+
+    Course findByCode(String courseCode);
 }

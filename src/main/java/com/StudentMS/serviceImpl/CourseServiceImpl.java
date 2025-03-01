@@ -38,4 +38,9 @@ public class CourseServiceImpl implements CourseService {
     public void deleteCourse(Long id) {
         courseRepo.deleteById(id);
     }
+
+    @Override
+    public Course findByCode(String courseCode) {
+        return courseRepo.findByCourseCode(courseCode);
+    }
 }

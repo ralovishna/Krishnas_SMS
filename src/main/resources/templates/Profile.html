@@ -82,12 +82,15 @@
                         <p class="card-text"><strong>Username:</strong> <span th:text="${user.username}"></span></p>
                         <p class="card-text"><strong>Phone:</strong> <span th:text="${user.phone}"></span></p>
                         <p class="card-text"><strong>Email:</strong> <span th:text="${user.email}"></span></p>
-                        <p class="card-text"><strong>Department:</strong> <span th:text="${user.department.name}"></span></p>
-<!--                        <p class="card-text"><strong>Teaching:</strong> <span th:text="${user.course.courseName}"></span></p>-->
+                        <p class="card-text"><strong>Department:</strong> <span
+                                th:text="${user.department.name}"></span></p>
+                        <!--                        <p class="card-text"><strong>Teaching:</strong> <span th:text="${user.course.courseName}"></span></p>-->
                         <p class="card-text"><strong>Subjects:</strong> <span th:text="${teacher.subjects}"></span></p>
-                        <p class="card-text"><strong>Designation:</strong> <span th:text="${teacher.designation}"></span></p>
-                        <p class="card-text"><strong>Assigned Classes:</strong> <span th:text="${teacher.assignedClasses}"></span></p>
-<!--                        <p class="card-text"><strong>Role:</strong> <span th:text="${user.role}"></span></p>-->
+                        <p class="card-text"><strong>Designation:</strong> <span
+                                th:text="${teacher.designation}"></span></p>
+                        <p class="card-text"><strong>Assigned Classes:</strong> <span
+                                th:text="${teacher.assignedClasses}"></span></p>
+                        <!--                        <p class="card-text"><strong>Role:</strong> <span th:text="${user.role}"></span></p>-->
                         <a class="btn btn-primary" th:href="@{/teachers/edit/{id}(id=${user.id})}">Edit Profile</a>
                     </div>
 
@@ -97,10 +100,11 @@
                         <p class="card-text"><strong>Username:</strong> <span th:text="${user.username}"></span></p>
                         <p class="card-text"><strong>Phone:</strong> <span th:text="${user.phone}"></span></p>
                         <p class="card-text"><strong>Email:</strong> <span th:text="${user.email}"></span></p>
-                        <p class="card-text"><strong>Department:</strong> <span th:text="${user.department.name}"></span></p>
-<!--                        <p class="card-text"><strong>Pursuing Course:</strong> <span th:text="${user.course.courseName}"></span></p>-->
+                        <p class="card-text"><strong>Department:</strong> <span
+                                th:text="${user.department.name}"></span></p>
+                        <!--                        <p class="card-text"><strong>Pursuing Course:</strong> <span th:text="${user.course.courseName}"></span></p>-->
                         <p class="card-text"><strong>Semester:</strong> <span th:text="${student.sem}"></span></p>
-<!--                        <p class="card-text"><strong>Role:</strong> <span th:text="${user.role}"></span></p>-->
+                        <!--                        <p class="card-text"><strong>Role:</strong> <span th:text="${user.role}"></span></p>-->
                         <a class="btn btn-primary" th:href="@{/students/edit/{id}(id=${user.id})}">Edit Profile</a>
                     </div>
                 </div>

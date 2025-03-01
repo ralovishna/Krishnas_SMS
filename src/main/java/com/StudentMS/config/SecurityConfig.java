@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
@@ -30,33 +29,35 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/login")) // Ignore CSRF for login..
+//        http.csrf(csrf -> csrf
+//                        .ignoringRequestMatchers("/login", "/register") // CSRF disabled for login/register endpoints
+        http
                 .authorizeHttpRequests(auth -> auth
-                        // Public Access (No authentication required)
+                        // Public Resources
                         .requestMatchers("/login", "/register", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
 
-                        .requestMatchers("/students", "/teachers", "/dashboard", "/contact", "/departments", "/courses", "/students/edit/**", "students/save", "teachers/save")
-                        .hasAnyRole("ADMIN", "TEACHER", "STUDENT")
+                        // General Access (Students, Teachers, Dashboard, etc.)
+                        .requestMatchers("/students", "/teachers", "/dashboard", "/contact", "/departments", "/courses",
+                                "/students/edit/**", "/teachers/save", "/students/save").hasAnyRole("ADMIN", "TEACHER", "STUDENT")
 
+                        // Specific Access (Admin or Teacher)
                         .requestMatchers("/students/**", "/teachers/edit/**").hasAnyRole("ADMIN", "TEACHER")
 
                         // Admin-Only Access (Wildcard)
                         .requestMatchers("/teachers/**", "/departments/**", "/courses/**", "/users/**").hasRole("ADMIN")
 
-                        // General Access (Dashboard, Contact, Departments, Courses, Students, Teachers)
-                        // Catch-All Rule (All other requests require authentication)
+                        // Default: All other requests require authentication
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .successHandler(new org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler()) // Add this
-                        .defaultSuccessUrl("/dashboard")
-                        .failureUrl("/login?error=true")
+                        .loginPage("/login") // Custom login page URL
+                        .defaultSuccessUrl("/dashboard", true) // Redirect after successful login
+                        .failureUrl("/login?error=true") // Redirect after failed login
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
+                        .logoutSuccessUrl("/login") // Redirect after logout
                         .permitAll()
                 );
         return http.build();
@@ -64,19 +65,19 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); // Using BCrypt for password encoding
     }
 
     @Bean
     public AuthenticationManager authenticationManager(@NotNull AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+        return authConfig.getAuthenticationManager(); // Configure the authentication manager
     }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setUserDetailsService(userDetailsService); // Custom user details service
+        authProvider.setPasswordEncoder(passwordEncoder()); // Set password encoder
         return authProvider;
     }
 }
